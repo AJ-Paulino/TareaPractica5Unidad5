@@ -1,0 +1,6 @@
+@TareaPractica5Unidad5_HostAddress = http://localhost:5122
+
+GET {{TareaPractica5Unidad5_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
