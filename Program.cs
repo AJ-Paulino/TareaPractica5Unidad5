@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using TareaPractica5Unidad5.DB;
+
 namespace TareaPractica5Unidad5
 {
     public class Program
@@ -10,6 +13,10 @@ namespace TareaPractica5Unidad5
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<TareaPractica5Context>(op =>
+            {
+                op.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"));
+            });
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
