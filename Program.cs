@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using TareaPractica5Unidad5.DB;
+using TareaPractica5Unidad5.Services.UsuariosServices;
 
 namespace TareaPractica5Unidad5
 {
@@ -17,6 +18,9 @@ namespace TareaPractica5Unidad5
             {
                 op.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"));
             });
+
+            builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -26,6 +30,10 @@ namespace TareaPractica5Unidad5
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/openapi/v1.json", "PEC");
+                });
             }
 
             app.UseHttpsRedirection();

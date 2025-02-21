@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TareaPractica5Unidad5.DB;
 
@@ -11,9 +12,11 @@ using TareaPractica5Unidad5.DB;
 namespace TareaPractica5Unidad5.Migrations
 {
     [DbContext(typeof(TareaPractica5Context))]
-    partial class TareaPractica5ContextModelSnapshot : ModelSnapshot
+    [Migration("20250221150137_AddPassword")]
+    partial class AddPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
