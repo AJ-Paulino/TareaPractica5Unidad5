@@ -19,7 +19,7 @@ namespace TareaPractica5Unidad5.Services.UsuariosServices
             return user!;
         }
 
-        public async Task<List<Usuario>> GetAll() 
+        public async Task<List<Usuario>> GetAll()
             => await _context.Usuarios.ToListAsync();
 
         public async Task<string> Post(Usuario usuario)
@@ -38,35 +38,46 @@ namespace TareaPractica5Unidad5.Services.UsuariosServices
             }
         }
 
-        public async Task<Usuario> DeleteId(int id, Usuario usuario)
+        public async Task<Usuario> DeleteId(int id)
         {
             var user = await _context.Usuarios.FirstOrDefaultAsync(d => d.Id == id);
 
             if (user == null)
             {
-                throw new Exception("No se encontró el usuario.");
+                Console.WriteLine("No se encontró el usuario.");
+            }
+            else
+            {
+                _context.Usuarios.Remove(user);
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Se eliminó el usuario.");
             }
 
-            _context.Usuarios.Remove(user);
-            await _context.SaveChangesAsync();
-            Console.WriteLine("Se eliminó el usuario.");
-
-            return user;
+            return user!;
         }
 
         public async Task<Usuario> PutId(int id, Usuario usuario)
         {
             var user = await _context.Usuarios.FirstOrDefaultAsync(p => p.Id == id);
+            usuario.Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password);
 
             if (user == null)
             {
-                throw new Exception("No se encontró el usuario.");
+                Console.WriteLine("No se encontró el usuario.");
+            }
+            else
+            {
+                user.Nombre = usuario.Nombre;
+                user.Correo = usuario.Correo;
+                user.Password = usuario.Password;
+                user.FechaDeNacimiento = user.FechaDeNacimiento;
+                user.Id = id;
+                _context.Usuarios.Update(user);
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Se editó el usuario.");
             }
 
-            user.Nombre = usuario.Nombre;
-            user.Correo = usuario.Correo;
-            
-            return user;
+            return user!;
         }
     }
 }

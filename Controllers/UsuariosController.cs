@@ -33,6 +33,6 @@ namespace TareaPractica5Unidad5.Controllers
 
         [HttpDelete("Id")]
         public Task<Usuario> DeleteId(int id, Usuario usuario) 
-            => _service.DeleteId(id, usuario);
+            => _service.DeleteId(id);
     }
 }
