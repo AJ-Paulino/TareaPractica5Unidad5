@@ -17,6 +17,7 @@ namespace TareaPractica5Unidad5.Models
         public string Correo { get; set; }
         public DateTime FechaDeNacimiento { get; set; }
 
+        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres.")]
         public string Password { get; set; }
     }
 }

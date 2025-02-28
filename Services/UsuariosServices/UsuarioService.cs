@@ -79,5 +79,26 @@ namespace TareaPractica5Unidad5.Services.UsuariosServices
 
             return user!;
         }
+
+        public async Task<Usuario> Login(string correo, string password)
+        {
+            var user = await _context.Usuarios.FirstOrDefaultAsync(l => l.Correo == correo);
+            if (user == null)
+            {
+                Console.WriteLine("No se encontró el usuario.");
+            }
+            else
+            {
+                if (BCrypt.Net.BCrypt.Verify(password, user.Password))
+                {
+                    Console.WriteLine("Inicio de sesión exitoso.");
+                }
+                else
+                {
+                    Console.WriteLine("Contraseña incorrecta.");
+                }
+            }
+            return user!;
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace TareaPractica5Unidad5.Services.UsuariosServices
         Task<Usuario> GetId(int id);
         Task<string> Post(Usuario usuario);
         Task<Usuario> PutId(int id, Usuario usuario);
+        Task<Usuario> Login(string correo, string password);
     }
 }

@@ -34,5 +34,9 @@ namespace TareaPractica5Unidad5.Controllers
         [HttpDelete("Id")]
         public Task<Usuario> DeleteId(int id, Usuario usuario) 
             => _service.DeleteId(id);
+
+        [HttpPost("Login")]
+        public Task<Usuario> Login(string correo, string password)
+             => _service.Login(correo, password);        
     }
 }
