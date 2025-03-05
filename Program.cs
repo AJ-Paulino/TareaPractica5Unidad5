@@ -1,5 +1,10 @@
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using TareaPractica5Unidad5.Models;
+using TareaPractica5Unidad5.Custom;
 using TareaPractica5Unidad5.DB;
 using TareaPractica5Unidad5.Services.UsuariosServices;
 
