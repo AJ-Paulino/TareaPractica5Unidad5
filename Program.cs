@@ -19,9 +19,33 @@ namespace TareaPractica5Unidad5
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            //Conexión a la base de datos
             builder.Services.AddDbContext<TareaPractica5Context>(op =>
             {
                 op.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"));
+            });
+
+            //Configuración de JWT, encriptar contraseña
+            builder.Services.AddSingleton<Utilidades>();
+
+            builder.Services.AddAuthentication(config =>
+            {
+                config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(config =>
+            {
+                config.RequireHttpsMetadata = false;
+                config.SaveToken = true;
+                config.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
+                };
             });
 
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -42,6 +66,8 @@ namespace TareaPractica5Unidad5
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
