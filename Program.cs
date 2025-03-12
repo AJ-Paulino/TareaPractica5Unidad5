@@ -7,6 +7,7 @@ using TareaPractica5Unidad5.Models;
 using TareaPractica5Unidad5.Custom;
 using TareaPractica5Unidad5.DB;
 using TareaPractica5Unidad5.Services.UsuariosServices;
+using CFDB;
 
 namespace TareaPractica5Unidad5
 {
@@ -21,10 +22,9 @@ namespace TareaPractica5Unidad5
             builder.Services.AddControllers();
 
             //Conexión a la base de datos
-            builder.Services.AddDbContext<TareaPractica5Context>(op =>
-            {
-                op.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"));
-            });
+            builder.Services.AddDbContext<TareaPractica5Context>(op =>            
+                op.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"))
+            );
 
             //Configuración de JWT, encriptar contraseña
             builder.Services.AddSingleton<Utilidades>();
@@ -53,7 +53,18 @@ namespace TareaPractica5Unidad5
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            builder.Services.AddDbContext<Practica5Context>(options =>            
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"))
+            );
+
             var app = builder.Build();
+
+            /*
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<Practica5Context>();
+                context.Database.Migrate();
+            }*/
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
