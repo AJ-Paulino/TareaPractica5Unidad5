@@ -54,11 +54,12 @@ namespace TareaPractica5Unidad5.Controllers
         public async Task<IActionResult> Login(UsuarioDTO objeto)
         {
             var usuarioEncontrado = await _dbContext.Usuarios.Where(u => 
-            u.Correo == objeto.Correo && u.Password == _utilidades.EncriptarSHA256(objeto.Password!)).FirstOrDefaultAsync();
+            u.Correo == objeto.Correo && 
+            u.Password == _utilidades.EncriptarSHA256(objeto.Password!)).FirstOrDefaultAsync();
 
             if (usuarioEncontrado == null)
             {
-                return StatusCode(StatusCodes.Status200OK, new { isSuccess = false,
+                return StatusCode(StatusCodes.Status200OK, new { isSuccess = false, token = "",
                 mensaje = "No se pudo iniciar sesión."});
             }
             else
