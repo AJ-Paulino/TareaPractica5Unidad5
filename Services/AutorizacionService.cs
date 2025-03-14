@@ -20,9 +20,46 @@ namespace TareaPractica5Unidad5.Services
             _configuration = configuration;
         }
 
-        public Task<AutorizacionResponse> DevolverToken(AutorizacionRequest autorizacion)
+        private string GenerarToken(string idUsuario)
         {
-            throw new NotImplementedException();
+            var key = _configuration?.GetValue<string>("JWT:Key");
+            var keyBytes = Encoding.ASCII.GetBytes(key!);
+
+            var claims = new ClaimsIdentity();
+            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, idUsuario));
+
+            var credencialesToken = new SigningCredentials(new SymmetricSecurityKey(keyBytes), 
+                SecurityAlgorithms.HmacSha256Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = claims,
+                Expires = System.DateTime.UtcNow.AddMinutes(5),
+                SigningCredentials = credencialesToken
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenConfig = tokenHandler.CreateToken(tokenDescriptor);
+
+            string tokenCreado = tokenHandler.WriteToken(tokenConfig);
+
+            return tokenCreado;
+        }
+
+        public async Task<AutorizacionResponse> DevolverToken(AutorizacionRequest autorizacion)
+        {
+            var usuarioEncontrado = _context?.Usuarios.FirstOrDefault(u => 
+            u.Correo == autorizacion.NombreUsuario &&
+            u.Password == autorizacion.Clave);
+
+            if (usuarioEncontrado == null)
+            {
+                return await Task.FromResult<AutorizacionResponse>(null!);
+            }
+
+            string tokenCreado = GenerarToken(usuarioEncontrado.Id.ToString());
+
+            return new AutorizacionResponse() { Token = tokenCreado, Resultado = true, Mensaje = "Token actualizado." };
         }
     }
 }
