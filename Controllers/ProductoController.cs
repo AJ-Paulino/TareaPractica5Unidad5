@@ -17,8 +17,8 @@ namespace TareaPractica5Unidad5.Controllers
     [ApiController]
     public class ProductoController : ControllerBase
     {
-        private Practica5Context _Practica5Context;
-        public ProductoController(Practica5Context Practica5Context)
+        private CFDB.Practica5Context _Practica5Context;
+        public ProductoController(CFDB.Practica5Context Practica5Context)
         {
             _Practica5Context = Practica5Context;
         }

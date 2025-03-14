@@ -1,23 +1,19 @@
-﻿using Microsoft.OpenApi.MicrosoftExtensions;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace TareaPractica5Unidad5.Models
+namespace TareaPractica5Unidad5.Models;
+
+public partial class Usuario
 {
-    public class Usuario
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [MinLength(3, ErrorMessage = "Debe ingresar su nombre y apellido.")]
-        public string? Nombre { get; set; }
+    public string Nombre { get; set; } = null!;
 
-        [EmailAddress(ErrorMessage = "Correo no válido.")]
-        public string? Correo { get; set; }
-        public DateTime FechaDeNacimiento { get; set; }
+    public string Correo { get; set; } = null!;
 
-        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres.")]
-        public string? Password { get; set; }
-    }
+    public DateTime FechaDeNacimiento { get; set; }
+
+    public string Password { get; set; } = null!;
+
+    public virtual ICollection<HistorialRefreshToken> HistorialRefreshTokens { get; set; } = new List<HistorialRefreshToken>();
 }

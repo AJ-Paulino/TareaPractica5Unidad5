@@ -53,7 +53,7 @@ namespace TareaPractica5Unidad5
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddDbContext<Practica5Context>(options =>            
+            builder.Services.AddDbContext<CFDB.Practica5Context>(options =>            
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"))
             );
 
