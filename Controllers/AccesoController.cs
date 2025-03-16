@@ -6,6 +6,8 @@ using TareaPractica5Unidad5.Models;
 using TareaPractica5Unidad5.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using TareaPractica5Unidad5.DB;
+using System.IdentityModel.Tokens.Jwt;
+using TareaPractica5Unidad5.Services;
 
 namespace TareaPractica5Unidad5.Controllers
 {
@@ -16,10 +18,12 @@ namespace TareaPractica5Unidad5.Controllers
     {
         private readonly TareaPractica5Context _dbContext;
         private readonly Utilidades _utilidades;
-        public AccesoController(TareaPractica5Context dbContext, Utilidades utilidades)
+        private readonly IAutorizacionService _autorizacionService;
+        public AccesoController(TareaPractica5Context dbContext, Utilidades utilidades, IAutorizacionService autorizacionService)
         {
             _dbContext = dbContext;
             _utilidades = utilidades;
+            _autorizacionService = autorizacionService;
         }
 
         [HttpPost]
@@ -28,8 +32,8 @@ namespace TareaPractica5Unidad5.Controllers
         {
             var modeloUsuario = new Usuario
             {
-                Nombre = objeto.Nombre,
-                Correo = objeto.Correo,
+                Nombre = objeto.Nombre!,
+                Correo = objeto.Correo!,
                 FechaDeNacimiento = objeto.FechaDeNacimiento,
                 Password = _utilidades.EncriptarSHA256(objeto.Password!)
             };
@@ -68,6 +72,31 @@ namespace TareaPractica5Unidad5.Controllers
                     mensaje = "Sesión iniciada.",
                     token = _utilidades.GenerarJWT(usuarioEncontrado) });
             }
+        }
+
+        [HttpPost]
+        [Route("Refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenExpiradoRecibido = tokenHandler.ReadJwtToken(request.TokenExpirado);
+
+            if (tokenExpiradoRecibido.ValidTo > DateTime.UtcNow)
+                return BadRequest(new AutorizacionResponse 
+                {
+                    Resultado = false, 
+                    Mensaje = "El token no ha expirado." 
+                });
+
+            string idUsuario = tokenExpiradoRecibido.Claims.First(x=>
+            x.Type == JwtRegisteredClaimNames.NameId).Value.ToString();
+
+            var autorizacionResponse = await _autorizacionService.DevolverRefreshToken(request, int.Parse(idUsuario));
+
+            if (autorizacionResponse.Resultado)
+                return Ok(autorizacionResponse);
+            else
+                return BadRequest(autorizacionResponse);
         }
     }
 }

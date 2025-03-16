@@ -9,6 +9,7 @@ using TareaPractica5Unidad5.DB;
 using TareaPractica5Unidad5.Services.UsuariosServices;
 using CFDB;
 using TareaPractica5Unidad5.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace TareaPractica5Unidad5
 {
@@ -57,6 +58,11 @@ namespace TareaPractica5Unidad5
             builder.Services.AddDbContext<CFDB.Practica5Context>(options =>            
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"))
             );
+
+            builder.Services.AddScoped<IAutorizacionService, AutorizacionService>();
+
+            var key = builder.Configuration.GetValue<string>("JWT:Key");
+            var keyBytes = Encoding.ASCII.GetBytes(key!);
 
             var app = builder.Build();
 
