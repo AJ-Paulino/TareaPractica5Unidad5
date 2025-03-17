@@ -7,15 +7,16 @@ using TareaPractica5Unidad5.Custom;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
+using CFDB;
 
 namespace TareaPractica5Unidad5.Services
 {
     public class AutorizacionService : IAutorizacionService
     {
-        private readonly Practica5Context? _context;
-        private readonly IConfiguration? _configuration;
+        private readonly Models.Practica5Context _context;
+        private readonly IConfiguration _configuration;
 
-        public AutorizacionService(Practica5Context? context, IConfiguration? configuration)
+        public AutorizacionService(Models.Practica5Context context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -23,7 +24,7 @@ namespace TareaPractica5Unidad5.Services
 
         private string GenerarToken(string idUsuario)
         {
-            var key = _configuration?.GetValue<string>("JWT:Key");
+            var key = _configuration.GetValue<string>("JWT:Key");
             var keyBytes = Encoding.ASCII.GetBytes(key!);
 
             var claims = new ClaimsIdentity();
@@ -76,7 +77,7 @@ namespace TareaPractica5Unidad5.Services
                 FechaExpiracion = System.DateTime.UtcNow.AddMinutes(60)
             };
 
-            await _context!.HistorialRefreshTokens.AddAsync(historialRefreshToken);
+            await _context.HistorialRefreshTokens.AddAsync(historialRefreshToken);
             await _context.SaveChangesAsync();
 
             return new AutorizacionResponse() 
@@ -90,7 +91,7 @@ namespace TareaPractica5Unidad5.Services
 
         public async Task<AutorizacionResponse> DevolverToken(AutorizacionRequest autorizacion)
         {
-            var usuarioEncontrado = _context?.Usuarios.FirstOrDefault(u => 
+            var usuarioEncontrado = _context.Usuarios.FirstOrDefault(u => 
             u.Correo == autorizacion.NombreUsuario &&
             u.Password == autorizacion.Clave);
 
@@ -110,7 +111,7 @@ namespace TareaPractica5Unidad5.Services
 
         public async Task<AutorizacionResponse> DevolverRefreshToken(RefreshTokenRequest refreshTokenRequest, int idUsuario)
         {
-            var refreshTokenEncontrado = _context!.HistorialRefreshTokens.FirstOrDefault(rt =>
+            var refreshTokenEncontrado = _context.HistorialRefreshTokens.FirstOrDefault(rt =>
             rt.Token == refreshTokenRequest.TokenExpirado &&
             rt.RefreshToken == refreshTokenRequest.RefreshToken &&
             rt.IdUsuario == idUsuario);

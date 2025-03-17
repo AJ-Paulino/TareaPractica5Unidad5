@@ -24,7 +24,11 @@ namespace TareaPractica5Unidad5
             builder.Services.AddControllers();
 
             //Conexión a la base de datos
-            builder.Services.AddDbContext<TareaPractica5Context>(op =>            
+            builder.Services.AddDbContext<TareaPractica5Context>(op =>
+                op.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"))
+            );
+
+            builder.Services.AddDbContext<Models.Practica5Context>(op =>
                 op.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"))
             );
 
@@ -55,7 +59,7 @@ namespace TareaPractica5Unidad5
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddDbContext<CFDB.Practica5Context>(options =>            
+            builder.Services.AddDbContext<CFDB.Practica5Context2>(options =>            
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Practica5"))
             );
 

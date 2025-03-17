@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using TareaPractica5Unidad5.Services;
 //using System.Xml;
 using Newtonsoft.Json;
+using CFDB;
 
 namespace TareaPractica5Unidad5.Controllers
 {
@@ -18,10 +19,10 @@ namespace TareaPractica5Unidad5.Controllers
     [ApiController]
     public class AccesoController : ControllerBase
     {
-        private readonly TareaPractica5Context _dbContext;
+        private readonly Models.Practica5Context _dbContext;
         private readonly Utilidades _utilidades;
-        private readonly IAutorizacionService _autorizacionService;
-        public AccesoController(TareaPractica5Context dbContext, Utilidades utilidades, IAutorizacionService autorizacionService)
+        private readonly AutorizacionService _autorizacionService;
+        public AccesoController(Models.Practica5Context dbContext, Utilidades utilidades, AutorizacionService autorizacionService)
         {
             _dbContext = dbContext;
             _utilidades = utilidades;

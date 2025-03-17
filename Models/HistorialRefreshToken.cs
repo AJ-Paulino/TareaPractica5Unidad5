@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TareaPractica5Unidad5.Models;
 
 public partial class HistorialRefreshToken
 {
+    [Key]
     public int IdHistorialToken { get; set; }
 
     public int? IdUsuario { get; set; }
