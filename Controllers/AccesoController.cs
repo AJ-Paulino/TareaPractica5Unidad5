@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using TareaPractica5Unidad5.DB;
 using System.IdentityModel.Tokens.Jwt;
 using TareaPractica5Unidad5.Services;
+//using System.Xml;
+using Newtonsoft.Json;
 
 namespace TareaPractica5Unidad5.Controllers
 {
@@ -41,6 +43,18 @@ namespace TareaPractica5Unidad5.Controllers
             await _dbContext.Usuarios.AddAsync(modeloUsuario);
             await _dbContext.SaveChangesAsync();
 
+            // Guardar información en archivo JSON
+            var usuarios = await _dbContext.Usuarios.ToListAsync();
+            var json = JsonConvert.SerializeObject(usuarios, Formatting.Indented);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "usuarios.json");
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Create(filePath).Dispose();
+            }
+
+            await System.IO.File.WriteAllTextAsync(filePath, json);
+
             if (modeloUsuario.Id != 0)
             {
                 return StatusCode(StatusCodes.Status200OK ,new { isSuccess = true, 
@@ -51,6 +65,23 @@ namespace TareaPractica5Unidad5.Controllers
                 return StatusCode(StatusCodes.Status200OK, new { isSuccess = false, 
                     mensaje = "No se pudo crear el usuario." });
             }
+        }
+
+        [HttpGet]
+        [Route("HistorialLogs")]
+        public IActionResult ObtenerHistorialLogs()
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "usuarios.json");
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound(new { isSuccess = false, mensaje = "No se encontró el archivo de logs." });
+            }
+
+            var json = System.IO.File.ReadAllText(filePath);
+            var usuarios = JsonConvert.DeserializeObject<List<Usuario>>(json);
+
+            return Ok(new { isSuccess = true, usuarios });
         }
 
         [HttpPost]
